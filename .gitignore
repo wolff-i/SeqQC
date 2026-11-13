@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environments
+.venv/
+env/
+.conda/
+
+# Generated data and reports
+data/
+logs/
+*.html
+
+# OS/editor files
+.DS_Store
+.vscode/
+.idea/
