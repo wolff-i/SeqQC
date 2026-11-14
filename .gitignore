@@ -9,7 +9,7 @@ env/
 .conda/
 
 # Generated data and reports
-data/
+data/output
 logs/
 *.html
 
