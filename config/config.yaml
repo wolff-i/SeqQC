@@ -1,0 +1,11 @@
+
+# SeqQC default configuration
+
+# Directory containing paired-end FASTQ.gz files
+input_dir: data/input
+
+# Parent directory for generated run outputs
+output_root: data/output
+
+# Number of threads used by FastQC
+threads: 2
