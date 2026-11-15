@@ -1,9 +1,12 @@
+"""Generate test FASTQ files for quality control."""
 from pathlib import Path
 import gzip
 
+# Define the output directory for the generated test FASTQ files.
 output_dir = Path("data/input")
 output_dir.mkdir(parents=True, exist_ok=True)
 
+# Define the test read pairs for each sample.
 samples = {
     "sample_001": [
         ("ACGTACGTACGTACGT", "TGCATGCATGCATGCA"),
@@ -15,6 +18,7 @@ samples = {
     ],
 }
 
+# Generate the test FASTQ files for each sample.
 for sample_id, read_pairs in samples.items():
     r1_path = output_dir / f"{sample_id}_R1.fastq.gz"
     r2_path = output_dir / f"{sample_id}_R2.fastq.gz"

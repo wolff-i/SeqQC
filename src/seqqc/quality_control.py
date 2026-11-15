@@ -197,38 +197,61 @@ def run_pipeline(input_dir: Path, output_dir: Path, threads: int = 2,) -> Path:
     multiqc_dir.mkdir()
 
     # Configure logging for the run.
+
     configure_logging(output_dir / "run.log")
 
-    # Log the number of validated samples.
-    logger.info("Validated %d sample(s)", len(pairs))
-
-    # Process each sample.
-    for sample, (r1, r2) in pairs.items():
+    try:
         logger.info(
-            "Processing %s (%d read pairs)",
-            sample,
-            counts[sample],
+            "Validated %d sample(s)", len(pairs)
         )
 
-        # Run FastQC on the sample's FASTQ pair.
-        run_fastqc(r1, r2, fastqc_dir, threads)
+        # Run FastQC on each validated sample.
+        for sample, (r1, r2) in pairs.items():
+            logger.info(
+                "Processing %s (%d read pairs)",
+                sample,
+                counts[sample],
+            )
 
-    # Combine results.
-    report = run_multiqc(fastqc_dir, multiqc_dir)
+            run_fastqc(
+                r1, r2, fastqc_dir, threads
+            )
 
-    # Generate a machine-readable QC summary.
-    summary_path = write_qc_summary(
-        pairs=pairs,
-        fastqc_dir=fastqc_dir,
-        output_csv=output_dir / "qc_summary.csv",
-        expected_counts=counts,
-    )
+        # Aggregate FastQC results.
+        report = run_multiqc(
+            fastqc_dir, multiqc_dir
+        )
 
-    # Log the QC summary and completed pipeline.
-    logger.info("QC summary: %s", summary_path)
-    logger.info("Completed: %s", report)
+        # Generate structured QC metrics.
+        summary_path = write_qc_summary(
+            pairs=pairs,
+            fastqc_dir=fastqc_dir,
+            output_csv=output_dir / "qc_summary.csv",
+            expected_counts=counts,
+        )
+
+        # Record successful completion.
+        success_marker = output_dir / "_SUCCESS"
+        success_marker.write_text(
+            "SeqQC completed successfully\n",
+            encoding="utf-8",
+        )
+
+        logger.info(
+            "QC summary: %s", summary_path
+        )
+        logger.info(
+            "Pipeline completed successfully"
+        )
+
+    except Exception:
+        logger.exception(
+            "Pipeline failed during QC execution"
+        )
+        raise
 
     return report
+
 
 
 def main() -> int:

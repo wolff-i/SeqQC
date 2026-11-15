@@ -175,6 +175,7 @@ def test_pipeline_with_mocked_tools(tmp_path, monkeypatch):
     assert calls == ["fastqc", "multiqc"]
     assert (output / "run.log").exists()
     assert (output / "qc_summary.csv").exists()
+    assert (output / "_SUCCESS").exists()
 
 
 def test_existing_output_rejected(tmp_path):
