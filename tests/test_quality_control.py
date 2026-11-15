@@ -146,6 +146,23 @@ def test_pipeline_with_mocked_tools(tmp_path, monkeypatch):
         fake_execute,
     )
 
+    # Replace the QC summary writer with a mock.
+    def fake_write_summary(
+        pairs,
+        fastqc_dir,
+        output_csv,
+        expected_counts=None,
+    ):
+        output_csv.write_text(
+            "sample_id,mate\nsample_001,R1\n"
+        )
+        return output_csv
+
+    monkeypatch.setattr(
+        qc,
+        "write_qc_summary",
+        fake_write_summary,
+    )
     # Run the full quality control pipeline.
     report = qc.run_pipeline(
         inputs,
@@ -157,6 +174,7 @@ def test_pipeline_with_mocked_tools(tmp_path, monkeypatch):
     assert report.exists()
     assert calls == ["fastqc", "multiqc"]
     assert (output / "run.log").exists()
+    assert (output / "qc_summary.csv").exists()
 
 
 def test_existing_output_rejected(tmp_path):

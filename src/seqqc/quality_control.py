@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 from seqqc.validation import discover_pairs, validate_fastq_pair
+from seqqc.reporting import write_qc_summary
 
 # Configure logging for the module.
 logger = logging.getLogger(__name__)
@@ -215,7 +216,16 @@ def run_pipeline(input_dir: Path, output_dir: Path, threads: int = 2,) -> Path:
     # Combine results.
     report = run_multiqc(fastqc_dir, multiqc_dir)
 
-    # Log the completed pipeline.
+    # Generate a machine-readable QC summary.
+    summary_path = write_qc_summary(
+        pairs=pairs,
+        fastqc_dir=fastqc_dir,
+        output_csv=output_dir / "qc_summary.csv",
+        expected_counts=counts,
+    )
+
+    # Log the QC summary and completed pipeline.
+    logger.info("QC summary: %s", summary_path)
     logger.info("Completed: %s", report)
 
     return report
