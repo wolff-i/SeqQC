@@ -8,8 +8,12 @@ __pycache__/
 env/
 .conda/
 
+# Sequencing input data
+data/input/*.fastq
+data/input/*.fastq.gz
+
 # Generated data and reports
-data/output
+data/output/
 logs/
 *.html
 
