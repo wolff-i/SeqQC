@@ -2,7 +2,9 @@
 
 SeqQC is a Python and Bash pipeline for validating
 paired-end sequencing files and generating automated
-quality-control reports.
+quality-control reports. This is an independent 
+demonstration project, not a validated clinical 
+diagnostic workflow.
 
 ## Features
 
